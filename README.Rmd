@@ -39,6 +39,7 @@ require(resdtmf)
 quanteda::corpus(c('i love you', 'you love me', 'i hate you'),
                  docvars = data.frame(sentiment = c(1,1,0))) %>%
     quanteda::dfm() -> input_dfm
+input_dfm
 ```
 
 ```{r}

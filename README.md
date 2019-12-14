@@ -43,6 +43,14 @@ require(resdtmf)
 quanteda::corpus(c('i love you', 'you love me', 'i hate you'),
                  docvars = data.frame(sentiment = c(1,1,0))) %>%
     quanteda::dfm() -> input_dfm
+input_dfm
+#> Document-feature matrix of: 3 documents, 5 features (40.0% sparse).
+#> 3 x 5 sparse Matrix of class "dfm"
+#>        features
+#> docs    i love you me hate
+#>   text1 1    1   1  0    0
+#>   text2 0    1   1  1    0
+#>   text3 1    0   1  0    1
 ```
 
 ``` r
@@ -53,7 +61,7 @@ The file is machine-readable.
 
 ``` r
 readLines("example.json")
-#> [1] "[[{\"d\":\"text1\",\"tid\":1,\"f\":1},{\"d\":\"text3\",\"tid\":1,\"f\":1},{\"d\":\"text1\",\"tid\":2,\"f\":1},{\"d\":\"text2\",\"tid\":2,\"f\":1},{\"d\":\"text1\",\"tid\":3,\"f\":1},{\"d\":\"text2\",\"tid\":3,\"f\":1},{\"d\":\"text3\",\"tid\":3,\"f\":1},{\"d\":\"text2\",\"tid\":4,\"f\":1},{\"d\":\"text3\",\"tid\":5,\"f\":1}],[{\"tid\":1,\"term\":\"i\"},{\"tid\":2,\"term\":\"love\"},{\"tid\":3,\"term\":\"you\"},{\"tid\":4,\"term\":\"me\"},{\"tid\":5,\"term\":\"hate\"}],[{\"d\":\"text1\",\"sentiment\":1},{\"d\":\"text2\",\"sentiment\":1},{\"d\":\"text3\",\"sentiment\":0}]]"
+#> [1] "[[{\"d\":\"text1\",\"tid\":1,\"f\":1},{\"d\":\"text3\",\"tid\":1,\"f\":1},{\"d\":\"text1\",\"tid\":2,\"f\":1},{\"d\":\"text2\",\"tid\":2,\"f\":1},{\"d\":\"text1\",\"tid\":3,\"f\":1},{\"d\":\"text2\",\"tid\":3,\"f\":1},{\"d\":\"text3\",\"tid\":3,\"f\":1},{\"d\":\"text2\",\"tid\":4,\"f\":1},{\"d\":\"text3\",\"tid\":5,\"f\":1}],[{\"tid\":1,\"term\":\"i\"},{\"tid\":2,\"term\":\"love\"},{\"tid\":3,\"term\":\"you\"},{\"tid\":4,\"term\":\"me\"},{\"tid\":5,\"term\":\"hate\"}],[{\"d\":\"text1\",\"sentiment\":1},{\"d\":\"text2\",\"sentiment\":1},{\"d\":\"text3\",\"sentiment\":0}],[{\"order\":1,\"d\":\"text1\"},{\"order\":2,\"d\":\"text2\"},{\"order\":3,\"d\":\"text3\"}]]"
 ```
 
 It can be imported easily back into R.
@@ -66,8 +74,8 @@ example_dfm
 #>        features
 #> docs    i love you me hate
 #>   text1 1    1   1  0    0
-#>   text3 1    0   1  0    1
 #>   text2 0    1   1  1    0
+#>   text3 1    0   1  0    1
 ```
 
 And the metadata is preserved.
@@ -76,6 +84,6 @@ And the metadata is preserved.
 docvars(example_dfm)
 #>       sentiment
 #> text1         1
-#> text3         0
 #> text2         1
+#> text3         0
 ```
