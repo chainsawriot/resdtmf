@@ -2,34 +2,32 @@
 #'
 #' This function exports a dfm into the Responsible Document-term Matrix format.
 #' @param input_dfm dfm object
-#' @param file_prefix characters, file prefix of the 3 exported files
-#' @param compress logical, to compress the 3 files into a zip file
+#' @param file_path characters, file path of the exported file
+#' @param compress logical, to compress the 3 files into a zip file (not implemented yet)
 #' @importFrom magrittr %>%
 #' @export
-export_resdtmf <- function(input_dfm, file_prefix, compress = FALSE) {
+export_resdtmf <- function(input_dfm, file_path, compress = FALSE) {
     input_triplet <- quanteda::convert(input_dfm, to = 'tripletlist')
     unique_feature <- unique(input_triplet$feature)
     clean_feature <- match(input_triplet$feature, unique_feature)
-    tibble::tibble(d = input_triplet$document, tid = clean_feature, f = input_triplet$frequency) %>% write.table(file = paste0(file_prefix, "_triplet.txt"), row.names = FALSE)
-    tibble::tibble(tid = seq_along(unique_feature), term = unique_feature) %>% write.table(file = paste0(file_prefix, "_features.txt"), row.names = FALSE)
-    cbind(tibble::tibble(d = rownames(quanteda::docvars(input_dfm))), quanteda::docvars(input_dfm)) %>% write.table(file = paste0(file_prefix, "_metadata.txt"), row.names = FALSE)
-    if (compress) {
-        files <- c(paste0(file_prefix, "_triplet.txt"), paste0(file_prefix, "_features.txt"), paste0(file_prefix, "_metadata.txt"))
-        zip(zipfile = paste0(file_prefix, ".resdtmf"), files = files)
-        file.remove(files)
-    }
+    triplet <- tibble::tibble(d = input_triplet$document, tid = clean_feature, f = input_triplet$frequency)
+    features <- tibble::tibble(tid = seq_along(unique_feature), term = unique_feature)
+    metadata <- cbind(tibble::tibble(d = rownames(quanteda::docvars(input_dfm))), quanteda::docvars(input_dfm)) %>% tibble::as_tibble()
+    json_content <- jsonlite::toJSON(list(triplet, features, metadata))
+    writeLines(json_content, file_path)
 }
 
 
 #' Import resdtmf files into a dfm
 #'
 #' This function imports resdtmf files exported using export_resdtmf into a dfm object.
-#' @param file_prefix characters, file prefix of the 3 exported files
+#' @param file_path characters, file path of the json file.
 #' @export
-import_resdtmf <- function(file_prefix) {
-    triplet <- read.table(paste0(file_prefix, "_triplet.txt"), header = TRUE)
-    features <- read.table(paste0(file_prefix, "_features.txt"), header = TRUE)
-    metadata <- read.table(paste0(file_prefix, "_metadata.txt"), header = TRUE)
+import_resdtmf <- function(file_path) {
+    json_content <- jsonlite::read_json(file_path, simplifyDataFrame = TRUE)
+    triplet <- json_content[[1]]
+    features <- json_content[[2]]
+    metadata <- json_content[[3]]
     output <- Matrix::sparseMatrix(i = match(triplet$d, unique(triplet$d)), j = triplet$tid, x = triplet$f, dimnames = list(unique(triplet$d), features$term))
     output_dfm <- quanteda::as.dfm(output)
     arranged_meta <- metadata[match(metadata$d, unique(triplet$d)), ] %>% dplyr::select(-d)

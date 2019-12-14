@@ -4,10 +4,10 @@
 \alias{import_resdtmf}
 \title{Import resdtmf files into a dfm}
 \usage{
-import_resdtmf(file_prefix)
+import_resdtmf(file_path)
 }
 \arguments{
-\item{file_prefix}{characters, file prefix of the 3 exported files}
+\item{file_path}{characters, file path of the json file.}
 }
 \description{
 This function imports resdtmf files exported using export_resdtmf into a dfm object.

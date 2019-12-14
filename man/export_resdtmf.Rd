@@ -4,14 +4,14 @@
 \alias{export_resdtmf}
 \title{Export a DFM into resdtmf}
 \usage{
-export_resdtmf(input_dfm, file_prefix, compress = FALSE)
+export_resdtmf(input_dfm, file_path, compress = FALSE)
 }
 \arguments{
 \item{input_dfm}{dfm object}
 
-\item{file_prefix}{characters, file prefix of the 3 exported files}
+\item{file_path}{characters, file path of the exported file}
 
-\item{compress}{logical, to compress the 3 files into a zip file}
+\item{compress}{logical, to compress the 3 files into a zip file (not implemented yet)}
 }
 \description{
 This function exports a dfm into the Responsible Document-term Matrix format.

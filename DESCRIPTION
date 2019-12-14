@@ -1,13 +1,13 @@
 Package: resdtmf
 Title: Responsible Document-Term Matrix Format
-Version: 0.0.0.1
+Version: 0.0.0.2
 Authors@R: 
     person(given = "Chung-hong",
            family = "Chan",
            role = c("aut", "cre"),
            email = "chainsawtiney@gmail.com",
            comment = c(ORCID = "0000-0002-6232-7530"))
-Description: This experimental package provides functions to export document-term matrices from various packages into a unified, machine-readable, plain-text files.
+Description: This experimental package provides functions to export document-term matrices from various packages into an unified, machine-readable, plain-text format.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -16,5 +16,6 @@ Imports:
     quanteda,
     tibble,
     dplyr,
-    magrittr
+    magrittr,
+    jsonlite
 RoxygenNote: 6.1.1
