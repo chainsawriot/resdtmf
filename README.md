@@ -70,8 +70,7 @@ example_dfm
 #>   text2 0    1   1  1    0
 ```
 
-And the metadata is preserved. At the moment, the original order of
-documents is not preserved.
+And the metadata is preserved.
 
 ``` r
 docvars(example_dfm)

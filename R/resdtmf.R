@@ -3,25 +3,31 @@
 #' This function exports a dfm into the Responsible Document-term Matrix format.
 #' @param input_dfm dfm object
 #' @param file_path characters, file path of the exported file
-#' @param compress logical, to compress the 3 files into a zip file (not implemented yet)
+#' @param compress logical, compress the json file into a zip file? (not implemented yet)
+#' @param order logical, present order of input_dfm?
 #' @importFrom magrittr %>%
 #' @export
-export_resdtmf <- function(input_dfm, file_path, compress = FALSE) {
+export_resdtmf <- function(input_dfm, file_path, order = TRUE, compress = FALSE) {
     input_triplet <- quanteda::convert(input_dfm, to = 'tripletlist')
     unique_feature <- unique(input_triplet$feature)
     clean_feature <- match(input_triplet$feature, unique_feature)
     triplet <- tibble::tibble(d = input_triplet$document, tid = clean_feature, f = input_triplet$frequency)
     features <- tibble::tibble(tid = seq_along(unique_feature), term = unique_feature)
     metadata <- cbind(tibble::tibble(d = rownames(quanteda::docvars(input_dfm))), quanteda::docvars(input_dfm)) %>% tibble::as_tibble()
-    json_content <- jsonlite::toJSON(list(triplet, features, metadata))
+    order_content <- tibble::tibble(order = seq_along(rownames(input_dfm)), d = rownames(input_dfm))
+    if (!order) {
+        json_content <- jsonlite::toJSON(list(triplet, features, metadata))
+    } else {
+        json_content <- jsonlite::toJSON(list(triplet, features, metadata, order_content))
+    }
     writeLines(json_content, file_path)
 }
 
 
-#' Import resdtmf files into a dfm
+#' Import a resdtmf file into DFM
 #'
-#' This function imports resdtmf files exported using export_resdtmf into a dfm object.
-#' @param file_path characters, file path of the json file.
+#' This function imports a resdtmf file exported using export_resdtmf into a dfm object.
+#' @param file_path characters, file path of the resdtmf json file.
 #' @export
 import_resdtmf <- function(file_path) {
     json_content <- jsonlite::read_json(file_path, simplifyDataFrame = TRUE)
@@ -32,5 +38,9 @@ import_resdtmf <- function(file_path) {
     output_dfm <- quanteda::as.dfm(output)
     arranged_meta <- metadata[match(metadata$d, unique(triplet$d)), ] %>% dplyr::select(-d)
     quanteda::docvars(output_dfm) <- arranged_meta
+    if (length(json_content) == 4) {
+        order_content <- json_content[[4]]
+        output_dfm <- output_dfm[match(rownames(output_dfm), order_content$d),]
+    }
     return(output_dfm)
 }

@@ -2,13 +2,13 @@
 % Please edit documentation in R/resdtmf.R
 \name{import_resdtmf}
 \alias{import_resdtmf}
-\title{Import resdtmf files into a dfm}
+\title{Import a resdtmf file into DFM}
 \usage{
 import_resdtmf(file_path)
 }
 \arguments{
-\item{file_path}{characters, file path of the json file.}
+\item{file_path}{characters, file path of the resdtmf json file.}
 }
 \description{
-This function imports resdtmf files exported using export_resdtmf into a dfm object.
+This function imports a resdtmf file exported using export_resdtmf into a dfm object.
 }

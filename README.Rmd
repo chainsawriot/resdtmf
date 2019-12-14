@@ -58,7 +58,7 @@ example_dfm <- import_resdtmf("example.json")
 example_dfm
 ```
 
-And the metadata is preserved. At the moment, the original order of documents is not preserved.
+And the metadata is preserved.
 
 ```{r}
 docvars(example_dfm)
