@@ -55,6 +55,7 @@ input_dfm
 
 ``` r
 export_resdtmf(input_dfm, "example.json")
+#> [1] "example.json"
 ```
 
 The file is machine-readable.
@@ -94,10 +95,33 @@ data.
 ``` r
 inaugural_dfm <- dfm(data_corpus_inaugural)
 export_resdtmf(inaugural_dfm, "inaug_dfm.json")
+#> [1] "inaug_dfm.json"
 ```
 
 ``` r
 inaugural_dfm_from_json <- import_resdtmf("inaug_dfm.json")
+inaugural_dfm_from_json
+#> Document-feature matrix of: 58 documents, 9,357 features (91.8% sparse).
+```
+
+``` r
 all.equal(inaugural_dfm, inaugural_dfm_from_json)
+#> [1] TRUE
+```
+
+Using compression
+
+``` r
+export_resdtmf(inaugural_dfm, "inaug_dfm2.json", compress = TRUE)
+#> [1] "inaug_dfm2.json.zip"
+file.size("inaug_dfm.json")
+#> [1] 1965514
+file.size("inaug_dfm2.json.zip")
+#> [1] 228407
+```
+
+``` r
+inaugural_dfm_from_json_zip <- import_resdtmf("inaug_dfm2.json.zip")
+all.equal(inaugural_dfm, inaugural_dfm_from_json_zip)
 #> [1] TRUE
 ```

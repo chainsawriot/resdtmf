@@ -74,5 +74,22 @@ export_resdtmf(inaugural_dfm, "inaug_dfm.json")
 
 ```{r}
 inaugural_dfm_from_json <- import_resdtmf("inaug_dfm.json")
+inaugural_dfm_from_json
+```
+
+```{r}
 all.equal(inaugural_dfm, inaugural_dfm_from_json)
+```
+
+Using compression
+
+```{r}
+export_resdtmf(inaugural_dfm, "inaug_dfm2.json", compress = TRUE)
+file.size("inaug_dfm.json")
+file.size("inaug_dfm2.json.zip")
+```
+
+```{r}
+inaugural_dfm_from_json_zip <- import_resdtmf("inaug_dfm2.json.zip")
+all.equal(inaugural_dfm, inaugural_dfm_from_json_zip)
 ```

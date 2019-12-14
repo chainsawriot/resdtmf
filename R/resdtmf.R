@@ -3,11 +3,12 @@
 #' This function exports a dfm into the Responsible Document-term Matrix format.
 #' @param input_dfm dfm object
 #' @param file_path characters, file path of the exported file
-#' @param compress logical, compress the json file into a zip file? (not implemented yet)
+#' @param compress logical, compress the json file into a zip file. File extension ".zip" will be added to file_path, if TRUE.
 #' @param order logical, present order of input_dfm?
 #' @importFrom magrittr %>%
+#' @return file path of exported file.
 #' @export
-export_resdtmf <- function(input_dfm, file_path, order = TRUE, compress = FALSE) {
+export_resdtmf <- function(input_dfm, file_path, order = TRUE, compress = FALSE, return_path = FALSE) {
     input_triplet <- quanteda::convert(input_dfm, to = 'tripletlist')
     unique_feature <- unique(input_triplet$feature)
     clean_feature <- match(input_triplet$feature, unique_feature)
@@ -21,6 +22,14 @@ export_resdtmf <- function(input_dfm, file_path, order = TRUE, compress = FALSE)
         json_content <- jsonlite::toJSON(list(triplet, features, metadata, order_content))
     }
     writeLines(json_content, file_path)
+    if (compress) {
+        return_path <- paste0(file_path, ".zip")
+        zip(zipfile = return_path, files = file_path)
+        file.remove(file_path)
+    } else {
+        return_path <- file_path
+    }
+    return(return_path)
 }
 
 
@@ -28,8 +37,15 @@ export_resdtmf <- function(input_dfm, file_path, order = TRUE, compress = FALSE)
 #'
 #' This function imports a resdtmf file exported using export_resdtmf into a dfm object.
 #' @param file_path characters, file path of the resdtmf json file.
+#' @param compress boolean, is the file created with export_resdtmf(compress = TRUE)? Will automatically set to TRUE when file_path ends with .zip.
+#' @return a dfm object.
 #' @export
-import_resdtmf <- function(file_path) {
+import_resdtmf <- function(file_path, compress = FALSE) {
+    if (compress | grepl("\\.zip$", file_path)) {
+        tmpdir <- tempdir()
+        unzip(file_path, exdir = tmpdir)
+        file_path <- grep("\\.json$", list.files(tmpdir, full.names = TRUE), value = TRUE)[1]
+    }
     json_content <- jsonlite::read_json(file_path, simplifyDataFrame = TRUE)
     triplet <- json_content[[1]]
     features <- json_content[[2]]

@@ -4,10 +4,15 @@
 \alias{import_resdtmf}
 \title{Import a resdtmf file into DFM}
 \usage{
-import_resdtmf(file_path)
+import_resdtmf(file_path, compress = FALSE)
 }
 \arguments{
 \item{file_path}{characters, file path of the resdtmf json file.}
+
+\item{compress}{boolean, is the file created with export_resdtmf(compress = TRUE)? Will automatically set to TRUE when file_path ends with .zip.}
+}
+\value{
+a dfm object.
 }
 \description{
 This function imports a resdtmf file exported using export_resdtmf into a dfm object.
