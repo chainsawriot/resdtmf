@@ -36,11 +36,11 @@ import_resdtmf <- function(file_path) {
     metadata <- json_content[[3]]
     output <- Matrix::sparseMatrix(i = match(triplet$d, unique(triplet$d)), j = triplet$tid, x = triplet$f, dimnames = list(unique(triplet$d), features$term))
     output_dfm <- quanteda::as.dfm(output)
-    arranged_meta <- metadata[match(metadata$d, unique(triplet$d)), ] %>% dplyr::select(-d)
+    arranged_meta <- metadata[match(rownames(output_dfm), metadata$d), ] %>% dplyr::select(-d)
     quanteda::docvars(output_dfm) <- arranged_meta
     if (length(json_content) == 4) {
         order_content <- json_content[[4]]
-        output_dfm <- output_dfm[match(rownames(output_dfm), order_content$d),]
+        output_dfm <- output_dfm[match(order_content$d, rownames(output_dfm)),]
     }
     return(output_dfm)
 }

@@ -87,3 +87,17 @@ docvars(example_dfm)
 #> text2         1
 #> text3         0
 ```
+
+Example: serializing a DTM created using the `data_corpus_inaugural`
+data.
+
+``` r
+inaugural_dfm <- dfm(data_corpus_inaugural)
+export_resdtmf(inaugural_dfm, "inaug_dfm.json")
+```
+
+``` r
+inaugural_dfm_from_json <- import_resdtmf("inaug_dfm.json")
+all.equal(inaugural_dfm, inaugural_dfm_from_json)
+#> [1] TRUE
+```
