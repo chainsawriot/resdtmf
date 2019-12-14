@@ -36,13 +36,40 @@ require(quanteda)
 require(magrittr)
 require(resdtmf)
 
-quanteda::corpus(c('i love you', 'you love me', 'i hate you'), docvars = data.frame(sentiment = c(1,1,0))) %>% quanteda::dfm() -> input_dfm
+quanteda::corpus(c('i love you', 'you love me', 'i hate you'),
+                 docvars = data.frame(sentiment = c(1,1,0))) %>%
+    quanteda::dfm() -> input_dfm
 ```
 
 ```{r}
 export_resdtmf(input_dfm, "example")
 ```
 
+The DTM exported is stored in 3 files.
+
 ```{r}
-import_resdtmf("example")
+readLines("example_triplet.txt")
+```
+
+```{r}
+readLines("example_features.txt")
+```
+
+
+```{r}
+readLines("example_metadata.txt")
+```
+
+
+It can be imported easily back into R.
+
+```{r}
+example_dfm <- import_resdtmf("example")
+example_dfm
+```
+
+And the metadata is preserved. At the moment, the original order of documents is not preserved.
+
+```{r}
+docvars(example_dfm)
 ```
