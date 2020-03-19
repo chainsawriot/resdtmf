@@ -61,7 +61,7 @@ The file is machine-readable.
 
 ``` r
 readLines("example.json")
-#> [1] "[[{\"d\":\"text1\",\"tid\":1,\"f\":1},{\"d\":\"text3\",\"tid\":1,\"f\":1},{\"d\":\"text1\",\"tid\":2,\"f\":1},{\"d\":\"text2\",\"tid\":2,\"f\":1},{\"d\":\"text1\",\"tid\":3,\"f\":1},{\"d\":\"text2\",\"tid\":3,\"f\":1},{\"d\":\"text3\",\"tid\":3,\"f\":1},{\"d\":\"text2\",\"tid\":4,\"f\":1},{\"d\":\"text3\",\"tid\":5,\"f\":1}],[{\"tid\":1,\"term\":\"i\"},{\"tid\":2,\"term\":\"love\"},{\"tid\":3,\"term\":\"you\"},{\"tid\":4,\"term\":\"me\"},{\"tid\":5,\"term\":\"hate\"}],[{\"d\":\"text1\",\"sentiment\":1},{\"d\":\"text2\",\"sentiment\":1},{\"d\":\"text3\",\"sentiment\":0}],[{\"order\":1,\"d\":\"text1\"},{\"order\":2,\"d\":\"text2\"},{\"order\":3,\"d\":\"text3\"}]]"
+#> [1] "{\"triplet\":[{\"d\":\"text1\",\"tid\":1,\"f\":1},{\"d\":\"text3\",\"tid\":1,\"f\":1},{\"d\":\"text1\",\"tid\":2,\"f\":1},{\"d\":\"text2\",\"tid\":2,\"f\":1},{\"d\":\"text1\",\"tid\":3,\"f\":1},{\"d\":\"text2\",\"tid\":3,\"f\":1},{\"d\":\"text3\",\"tid\":3,\"f\":1},{\"d\":\"text2\",\"tid\":4,\"f\":1},{\"d\":\"text3\",\"tid\":5,\"f\":1}],\"features\":[{\"tid\":1,\"term\":\"i\"},{\"tid\":2,\"term\":\"love\"},{\"tid\":3,\"term\":\"you\"},{\"tid\":4,\"term\":\"me\"},{\"tid\":5,\"term\":\"hate\"}],\"dumped_docvars\":[{\"d\":\"text1\",\"sentiment\":1},{\"d\":\"text2\",\"sentiment\":1},{\"d\":\"text3\",\"sentiment\":0}],\"dumped_meta\":[],\"order_of_content\":[{\"order\":1,\"d\":\"text1\"},{\"order\":2,\"d\":\"text2\"},{\"order\":3,\"d\":\"text3\"}]}"
 ```
 
 It can be imported easily back into R.
@@ -87,12 +87,20 @@ docvars(example_dfm)
 #> 3         0
 ```
 
+``` r
+all.equal(example_dfm, input_dfm)
+#> [1] "Attributes: < Component \"docvars\": Component \"docid_\": Attributes: < Component \"levels\": 2 string mismatches > >"
+```
+
 Example: serializing a DTM created using the `data_corpus_inaugural`
 data.
 
 ``` r
 inaugural_dfm <- dfm(data_corpus_inaugural)
 export_resdtmf(inaugural_dfm, "inaug_dfm.json")
+#> Warning in export_resdtmf(inaugural_dfm, "inaug_dfm.json"): Factor
+#> column(s) detected. These column(s) are preserved as characters without
+#> factor information.
 #> [1] "inaug_dfm.json"
 ```
 
@@ -122,27 +130,26 @@ inaugural_dfm_from_json
 ``` r
 all.equal(inaugural_dfm, inaugural_dfm_from_json)
 #> [1] "Attributes: < Component \"docvars\": Component \"docid_\": Attributes: < Component \"levels\": 30 string mismatches > >"
-#> [2] "Attributes: < Component \"docvars\": Component \"Party\": 'current' is not a factor >"                                  
-#> [3] "Attributes: < Component \"meta\": Component \"user\": names for target but not for current >"                           
-#> [4] "Attributes: < Component \"meta\": Component \"user\": Length mismatch: comparison on first 0 components >"
+#> [2] "Attributes: < Component \"docvars\": Component \"Party\": 'current' is not a factor >"
 ```
 
 Using compression
 
 ``` r
 export_resdtmf(inaugural_dfm, "inaug_dfm2.json", compress = TRUE)
+#> Warning in export_resdtmf(inaugural_dfm, "inaug_dfm2.json", compress
+#> = TRUE): Factor column(s) detected. These column(s) are preserved as
+#> characters without factor information.
 #> [1] "inaug_dfm2.json.zip"
 file.size("inaug_dfm.json")
-#> [1] 1969216
+#> [1] 1969816
 file.size("inaug_dfm2.json.zip")
-#> [1] 228985
+#> [1] 229333
 ```
 
 ``` r
 inaugural_dfm_from_json_zip <- import_resdtmf("inaug_dfm2.json.zip")
 all.equal(inaugural_dfm, inaugural_dfm_from_json_zip)
 #> [1] "Attributes: < Component \"docvars\": Component \"docid_\": Attributes: < Component \"levels\": 30 string mismatches > >"
-#> [2] "Attributes: < Component \"docvars\": Component \"Party\": 'current' is not a factor >"                                  
-#> [3] "Attributes: < Component \"meta\": Component \"user\": names for target but not for current >"                           
-#> [4] "Attributes: < Component \"meta\": Component \"user\": Length mismatch: comparison on first 0 components >"
+#> [2] "Attributes: < Component \"docvars\": Component \"Party\": 'current' is not a factor >"
 ```

@@ -65,6 +65,10 @@ And the metadata is preserved.
 docvars(example_dfm)
 ```
 
+```{r}
+all.equal(example_dfm, input_dfm)
+```
+
 Example: serializing a DTM created using the `data_corpus_inaugural` data.
 
 ```{r}
@@ -92,4 +96,11 @@ file.size("inaug_dfm2.json.zip")
 ```{r}
 inaugural_dfm_from_json_zip <- import_resdtmf("inaug_dfm2.json.zip")
 all.equal(inaugural_dfm, inaugural_dfm_from_json_zip)
+```
+
+```{r, include = FALSE}
+### Clean up
+unlink("inaug_dfm2.json.zip")
+unlink("inaug_dfm.json")
+unlink("example.json")
 ```

@@ -19,3 +19,5 @@ Imports:
     magrittr,
     jsonlite
 RoxygenNote: 7.0.2
+Suggests: 
+    testthat
