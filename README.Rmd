@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 ```
-# resdtmf
+# resdtmf <img src="man/figures/resdtmf_logo.png" align="right" height="200" />
 
 <!-- badges: start -->
 <!-- badges: end -->

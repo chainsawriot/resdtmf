@@ -1,6 +1,6 @@
 Package: resdtmf
 Title: Responsible Document-Term Matrix Format
-Version: 0.0.0.6
+Version: 0.0.1
 Authors@R: 
     person(given = "Chung-hong",
            family = "Chan",
@@ -13,7 +13,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     Matrix,
-    quanteda,
+    quanteda (>= 2.0),
     tibble,
     dplyr,
     magrittr,

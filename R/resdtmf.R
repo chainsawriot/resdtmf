@@ -16,7 +16,7 @@ export_resdtmf <- function(input_dfm, file_path, order = TRUE, compress = FALSE,
     features <- tibble::tibble(tid = seq_along(unique_feature), term = unique_feature)
     if (length(names(Filter(is.factor, docvars(input_dfm)))) != 0) {
         ## there is factor column(s) in the data.frame
-        warning("Factor column(s) detected. These column(s) are preserved as characters without factor information.")
+        warning("Factor column(s) detected. These column(s) are preserved as character without factor information.")
     }
     dumped_docvars <- cbind(tibble::tibble(d = rownames(input_dfm)), quanteda::docvars(input_dfm)) %>% tibble::as_tibble()
     order_of_content <- tibble::tibble(order = seq_along(rownames(input_dfm)), d = rownames(input_dfm))
@@ -55,7 +55,9 @@ import_resdtmf <- function(file_path, compress = FALSE) {
     arranged_meta <- dumped_docvars[match(rownames(output_dfm), dumped_docvars$d), ] %>% dplyr::select(-d)
     quanteda::docvars(output_dfm) <- arranged_meta
     order_of_content <- json_content$order_of_content
+    ### Fixing the order
     output_dfm <- output_dfm[match(order_of_content$d, rownames(output_dfm)),]
+    output_dfm@docvars$docid_ <- factor(output_dfm@docvars$docid_, order_of_content$d)
     ### This is a guess!
     meta(output_dfm) <- lapply(json_content$dumped_meta, unlist)
     return(output_dfm)

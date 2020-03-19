@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# resdtmf
+# resdtmf <img src="man/figures/resdtmf_logo.png" align="right" height="200" />
 
 <!-- badges: start -->
 
@@ -89,7 +89,7 @@ docvars(example_dfm)
 
 ``` r
 all.equal(example_dfm, input_dfm)
-#> [1] "Attributes: < Component \"docvars\": Component \"docid_\": Attributes: < Component \"levels\": 2 string mismatches > >"
+#> [1] TRUE
 ```
 
 Example: serializing a DTM created using the `data_corpus_inaugural`
@@ -99,7 +99,7 @@ data.
 inaugural_dfm <- dfm(data_corpus_inaugural)
 export_resdtmf(inaugural_dfm, "inaug_dfm.json")
 #> Warning in export_resdtmf(inaugural_dfm, "inaug_dfm.json"): Factor
-#> column(s) detected. These column(s) are preserved as characters without
+#> column(s) detected. These column(s) are preserved as character without
 #> factor information.
 #> [1] "inaug_dfm.json"
 ```
@@ -129,8 +129,7 @@ inaugural_dfm_from_json
 
 ``` r
 all.equal(inaugural_dfm, inaugural_dfm_from_json)
-#> [1] "Attributes: < Component \"docvars\": Component \"docid_\": Attributes: < Component \"levels\": 30 string mismatches > >"
-#> [2] "Attributes: < Component \"docvars\": Component \"Party\": 'current' is not a factor >"
+#> [1] "Attributes: < Component \"docvars\": Component \"Party\": 'current' is not a factor >"
 ```
 
 Using compression
@@ -139,7 +138,7 @@ Using compression
 export_resdtmf(inaugural_dfm, "inaug_dfm2.json", compress = TRUE)
 #> Warning in export_resdtmf(inaugural_dfm, "inaug_dfm2.json", compress
 #> = TRUE): Factor column(s) detected. These column(s) are preserved as
-#> characters without factor information.
+#> character without factor information.
 #> [1] "inaug_dfm2.json.zip"
 file.size("inaug_dfm.json")
 #> [1] 1969816
@@ -150,6 +149,5 @@ file.size("inaug_dfm2.json.zip")
 ``` r
 inaugural_dfm_from_json_zip <- import_resdtmf("inaug_dfm2.json.zip")
 all.equal(inaugural_dfm, inaugural_dfm_from_json_zip)
-#> [1] "Attributes: < Component \"docvars\": Component \"docid_\": Attributes: < Component \"levels\": 30 string mismatches > >"
-#> [2] "Attributes: < Component \"docvars\": Component \"Party\": 'current' is not a factor >"
+#> [1] "Attributes: < Component \"docvars\": Component \"Party\": 'current' is not a factor >"
 ```
