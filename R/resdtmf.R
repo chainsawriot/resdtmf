@@ -4,7 +4,7 @@
 #' @param input_dfm dfm object
 #' @param file_path characters, file path of the exported file
 #' @param compress logical, compress the json file into a zip file. File extension ".zip" will be added to file_path, if TRUE.
-#' @param order logical, present order of input_dfm?
+#' @param order logical, preserve the order of input_dfm in the exported file?
 #' @importFrom magrittr %>%
 #' @return file path of exported file.
 #' @export
@@ -14,7 +14,7 @@ export_resdtmf <- function(input_dfm, file_path, order = TRUE, compress = FALSE,
     clean_feature <- match(input_triplet$feature, unique_feature)
     triplet <- tibble::tibble(d = input_triplet$document, tid = clean_feature, f = input_triplet$frequency)
     features <- tibble::tibble(tid = seq_along(unique_feature), term = unique_feature)
-    metadata <- cbind(tibble::tibble(d = rownames(quanteda::docvars(input_dfm))), quanteda::docvars(input_dfm)) %>% tibble::as_tibble()
+    metadata <- cbind(tibble::tibble(d = rownames(input_dfm)), quanteda::docvars(input_dfm)) %>% tibble::as_tibble()
     order_content <- tibble::tibble(order = seq_along(rownames(input_dfm)), d = rownames(input_dfm))
     if (!order) {
         json_content <- jsonlite::toJSON(list(triplet, features, metadata))

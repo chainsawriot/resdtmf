@@ -27,7 +27,7 @@ This is a basic example which shows you how to solve a common problem:
 ``` r
 require(quanteda)
 #> Loading required package: quanteda
-#> Package version: 1.5.2
+#> Package version: 2.0.0
 #> Parallel computing: 2 of 4 threads used.
 #> See https://quanteda.io for tutorials and examples.
 #> 
@@ -44,8 +44,7 @@ quanteda::corpus(c('i love you', 'you love me', 'i hate you'),
                  docvars = data.frame(sentiment = c(1,1,0))) %>%
     quanteda::dfm() -> input_dfm
 input_dfm
-#> Document-feature matrix of: 3 documents, 5 features (40.0% sparse).
-#> 3 x 5 sparse Matrix of class "dfm"
+#> Document-feature matrix of: 3 documents, 5 features (40.0% sparse) and 1 docvar.
 #>        features
 #> docs    i love you me hate
 #>   text1 1    1   1  0    0
@@ -70,8 +69,7 @@ It can be imported easily back into R.
 ``` r
 example_dfm <- import_resdtmf("example.json")
 example_dfm
-#> Document-feature matrix of: 3 documents, 5 features (40.0% sparse).
-#> 3 x 5 sparse Matrix of class "dfm"
+#> Document-feature matrix of: 3 documents, 5 features (40.0% sparse) and 1 docvar.
 #>        features
 #> docs    i love you me hate
 #>   text1 1    1   1  0    0
@@ -83,10 +81,10 @@ And the metadata is preserved.
 
 ``` r
 docvars(example_dfm)
-#>       sentiment
-#> text1         1
-#> text2         1
-#> text3         0
+#>   sentiment
+#> 1         1
+#> 2         1
+#> 3         0
 ```
 
 Example: serializing a DTM created using the `data_corpus_inaugural`
@@ -101,12 +99,32 @@ export_resdtmf(inaugural_dfm, "inaug_dfm.json")
 ``` r
 inaugural_dfm_from_json <- import_resdtmf("inaug_dfm.json")
 inaugural_dfm_from_json
-#> Document-feature matrix of: 58 documents, 9,357 features (91.8% sparse).
+#> Document-feature matrix of: 58 documents, 9,399 features (91.8% sparse) and 4 docvars.
+#>                  features
+#> docs              fellow-citizens  of the senate and house representatives
+#>   1789-Washington               1  71 116      1  48     2               2
+#>   1793-Washington               0  11  13      0   2     0               0
+#>   1797-Adams                    3 140 163      1 130     0               2
+#>   1801-Jefferson                2 104 130      0  81     0               0
+#>   1805-Jefferson                0 101 143      0  93     0               0
+#>   1809-Madison                  1  69 104      0  43     0               0
+#>                  features
+#> docs              : among vicissitudes
+#>   1789-Washington 1     1            1
+#>   1793-Washington 1     0            0
+#>   1797-Adams      0     4            0
+#>   1801-Jefferson  1     1            0
+#>   1805-Jefferson  0     7            0
+#>   1809-Madison    0     0            0
+#> [ reached max_ndoc ... 52 more documents, reached max_nfeat ... 9,389 more features ]
 ```
 
 ``` r
 all.equal(inaugural_dfm, inaugural_dfm_from_json)
-#> [1] TRUE
+#> [1] "Attributes: < Component \"docvars\": Component \"docid_\": Attributes: < Component \"levels\": 30 string mismatches > >"
+#> [2] "Attributes: < Component \"docvars\": Component \"Party\": 'current' is not a factor >"                                  
+#> [3] "Attributes: < Component \"meta\": Component \"user\": names for target but not for current >"                           
+#> [4] "Attributes: < Component \"meta\": Component \"user\": Length mismatch: comparison on first 0 components >"
 ```
 
 Using compression
@@ -115,13 +133,16 @@ Using compression
 export_resdtmf(inaugural_dfm, "inaug_dfm2.json", compress = TRUE)
 #> [1] "inaug_dfm2.json.zip"
 file.size("inaug_dfm.json")
-#> [1] 1965514
+#> [1] 1969216
 file.size("inaug_dfm2.json.zip")
-#> [1] 228407
+#> [1] 228985
 ```
 
 ``` r
 inaugural_dfm_from_json_zip <- import_resdtmf("inaug_dfm2.json.zip")
 all.equal(inaugural_dfm, inaugural_dfm_from_json_zip)
-#> [1] TRUE
+#> [1] "Attributes: < Component \"docvars\": Component \"docid_\": Attributes: < Component \"levels\": 30 string mismatches > >"
+#> [2] "Attributes: < Component \"docvars\": Component \"Party\": 'current' is not a factor >"                                  
+#> [3] "Attributes: < Component \"meta\": Component \"user\": names for target but not for current >"                           
+#> [4] "Attributes: < Component \"meta\": Component \"user\": Length mismatch: comparison on first 0 components >"
 ```

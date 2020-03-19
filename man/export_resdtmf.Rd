@@ -4,15 +4,20 @@
 \alias{export_resdtmf}
 \title{Export a DFM into resdtmf}
 \usage{
-export_resdtmf(input_dfm, file_path, order = TRUE, compress = FALSE,
-  return_path = FALSE)
+export_resdtmf(
+  input_dfm,
+  file_path,
+  order = TRUE,
+  compress = FALSE,
+  return_path = FALSE
+)
 }
 \arguments{
 \item{input_dfm}{dfm object}
 
 \item{file_path}{characters, file path of the exported file}
 
-\item{order}{logical, present order of input_dfm?}
+\item{order}{logical, preserve the order of input_dfm in the exported file?}
 
 \item{compress}{logical, compress the json file into a zip file. File extension ".zip" will be added to file_path, if TRUE.}
 }
