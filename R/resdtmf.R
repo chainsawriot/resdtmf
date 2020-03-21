@@ -5,7 +5,6 @@
 #' @param file_path characters, file path of the exported file
 #' @param compress logical, compress the json file into a zip file. File extension ".zip" will be added to file_path, if TRUE.
 #' @param order logical, preserve the order of input_dfm in the exported file?
-#' @importFrom magrittr %>%
 #' @return file path of exported file.
 #' @export
 export_resdtmf <- function(input_dfm, file_path, order = TRUE, compress = FALSE, return_path = FALSE) {
@@ -18,7 +17,7 @@ export_resdtmf <- function(input_dfm, file_path, order = TRUE, compress = FALSE,
         ## there is factor column(s) in the data.frame
         warning("Factor column(s) detected. These column(s) are preserved as character without factor information.")
     }
-    dumped_docvars <- cbind(tibble::tibble(d = rownames(input_dfm)), quanteda::docvars(input_dfm)) %>% tibble::as_tibble()
+    dumped_docvars <- tibble::as_tibble(cbind(tibble::tibble(d = rownames(input_dfm)), quanteda::docvars(input_dfm)))
     order_of_content <- tibble::tibble(order = seq_along(rownames(input_dfm)), d = rownames(input_dfm))
     json_content <- jsonlite::toJSON(list(triplet = triplet, features = features, dumped_docvars = dumped_docvars, dumped_meta = meta(input_dfm), order_of_content = order_of_content))
     writeLines(json_content, file_path)
@@ -52,7 +51,7 @@ import_resdtmf <- function(file_path, compress = FALSE) {
     dumped_docvars <- json_content$dumped_docvars
     output <- Matrix::sparseMatrix(i = match(triplet$d, unique(triplet$d)), j = triplet$tid, x = triplet$f, dimnames = list(unique(triplet$d), features$term))
     output_dfm <- quanteda::as.dfm(output)
-    arranged_meta <- dumped_docvars[match(rownames(output_dfm), dumped_docvars$d), ] %>% dplyr::select(-d)
+    arranged_meta <- subset(dumped_docvars[match(rownames(output_dfm), dumped_docvars$d), ], select = -c(d))
     quanteda::docvars(output_dfm) <- arranged_meta
     order_of_content <- json_content$order_of_content
     ### Fixing the order

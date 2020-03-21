@@ -2,4 +2,3 @@
 
 export(export_resdtmf)
 export(import_resdtmf)
-importFrom(magrittr,"%>%")
