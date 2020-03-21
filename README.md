@@ -7,10 +7,10 @@
 
 <!-- badges: end -->
 
-The goal of Responsible Document-term Matrix Format (resdtmf) is to
-create a machine-readable, plain-text and exchangable file format of
-document-term matrices (dtm, or in quanteda’s parlance, document-feature
-matrices).
+The goal of Responsible Document-term Matrix Format (`resdtmf`,
+pronounced as “res-dumf” /ɹɪˈzdəmf/) is to create a machine-readable,
+plain-text and exchangable file format of document-term matrices (dtm,
+or in quanteda’s parlance, document-feature matrices).
 
 Currently, there is no standard format for document-term matrics. A
 resdtmf file is a JSON file with five components:
@@ -23,6 +23,111 @@ resdtmf file is a JSON file with five components:
 4.  `dumped_meta`: meta-data of the entire dtm
 5.  `order_of_content`: a collection of tuples of 2 values: order
     (numeric sequence of order), docid.
+
+This is an example of a resdtmf file.
+
+``` json
+{
+  "triplets": [
+    {
+      "docid": "text1",
+      "tid": 1,
+      "f": 1
+    },
+    {
+      "docid": "text3",
+      "tid": 1,
+      "f": 1
+    },
+    {
+      "docid": "text1",
+      "tid": 2,
+      "f": 1
+    },
+    {
+      "docid": "text2",
+      "tid": 2,
+      "f": 1
+    },
+    {
+      "docid": "text1",
+      "tid": 3,
+      "f": 1
+    },
+    {
+      "docid": "text2",
+      "tid": 3,
+      "f": 1
+    },
+    {
+      "docid": "text3",
+      "tid": 3,
+      "f": 1
+    },
+    {
+      "docid": "text2",
+      "tid": 4,
+      "f": 1
+    },
+    {
+      "docid": "text3",
+      "tid": 5,
+      "f": 1
+    }
+  ],
+  "features": [
+    {
+      "tid": 1,
+      "term": "i"
+    },
+    {
+      "tid": 2,
+      "term": "love"
+    },
+    {
+      "tid": 3,
+      "term": "you"
+    },
+    {
+      "tid": 4,
+      "term": "me"
+    },
+    {
+      "tid": 5,
+      "term": "hate"
+    }
+  ],
+  "dumped_docvars": [
+    {
+      "docid": "text1",
+      "sentiment": 1
+    },
+    {
+      "docid": "text2",
+      "sentiment": 1
+    },
+    {
+      "docid": "text3",
+      "sentiment": 0
+    }
+  ],
+  "dumped_meta": [],
+  "order_of_content": [
+    {
+      "order": 1,
+      "docid": "text1"
+    },
+    {
+      "order": 2,
+      "docid": "text2"
+    },
+    {
+      "order": 3,
+      "docid": "text3"
+    }
+  ]
+}
+```
 
 ## Installation
 
@@ -76,7 +181,7 @@ The file is machine-readable.
 
 ``` r
 readLines("example.json")
-#> [1] "{\"triplet\":[{\"d\":\"text1\",\"tid\":1,\"f\":1},{\"d\":\"text3\",\"tid\":1,\"f\":1},{\"d\":\"text1\",\"tid\":2,\"f\":1},{\"d\":\"text2\",\"tid\":2,\"f\":1},{\"d\":\"text1\",\"tid\":3,\"f\":1},{\"d\":\"text2\",\"tid\":3,\"f\":1},{\"d\":\"text3\",\"tid\":3,\"f\":1},{\"d\":\"text2\",\"tid\":4,\"f\":1},{\"d\":\"text3\",\"tid\":5,\"f\":1}],\"features\":[{\"tid\":1,\"term\":\"i\"},{\"tid\":2,\"term\":\"love\"},{\"tid\":3,\"term\":\"you\"},{\"tid\":4,\"term\":\"me\"},{\"tid\":5,\"term\":\"hate\"}],\"dumped_docvars\":[{\"d\":\"text1\",\"sentiment\":1},{\"d\":\"text2\",\"sentiment\":1},{\"d\":\"text3\",\"sentiment\":0}],\"dumped_meta\":[],\"order_of_content\":[{\"order\":1,\"d\":\"text1\"},{\"order\":2,\"d\":\"text2\"},{\"order\":3,\"d\":\"text3\"}]}"
+#> [1] "{\"triplets\":[{\"docid\":\"text1\",\"tid\":1,\"f\":1},{\"docid\":\"text3\",\"tid\":1,\"f\":1},{\"docid\":\"text1\",\"tid\":2,\"f\":1},{\"docid\":\"text2\",\"tid\":2,\"f\":1},{\"docid\":\"text1\",\"tid\":3,\"f\":1},{\"docid\":\"text2\",\"tid\":3,\"f\":1},{\"docid\":\"text3\",\"tid\":3,\"f\":1},{\"docid\":\"text2\",\"tid\":4,\"f\":1},{\"docid\":\"text3\",\"tid\":5,\"f\":1}],\"features\":[{\"tid\":1,\"term\":\"i\"},{\"tid\":2,\"term\":\"love\"},{\"tid\":3,\"term\":\"you\"},{\"tid\":4,\"term\":\"me\"},{\"tid\":5,\"term\":\"hate\"}],\"dumped_docvars\":[{\"docid\":\"text1\",\"sentiment\":1},{\"docid\":\"text2\",\"sentiment\":1},{\"docid\":\"text3\",\"sentiment\":0}],\"dumped_meta\":[],\"order_of_content\":[{\"order\":1,\"docid\":\"text1\"},{\"order\":2,\"docid\":\"text2\"},{\"order\":3,\"docid\":\"text3\"}]}"
 ```
 
 It can be imported easily back into R.
@@ -158,9 +263,9 @@ export_resdtmf(inaugural_dfm, "inaug_dfm2.json", compress = TRUE)
 #> character without factor information.
 #> [1] "inaug_dfm2.json.zip"
 file.size("inaug_dfm.json")
-#> [1] 1969816
+#> [1] 2149221
 file.size("inaug_dfm2.json.zip")
-#> [1] 229333
+#> [1] 230852
 ```
 
 ``` r
