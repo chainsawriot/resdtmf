@@ -7,13 +7,26 @@
 
 <!-- badges: end -->
 
-The goal of resdtmf is to create a machine-readable, plain-text and
-exchangable file format of document-term matrices (dtm, or
-document-feature matrices).
+The goal of Responsible Document-term Matrix Format (resdtmf) is to
+create a machine-readable, plain-text and exchangable file format of
+document-term matrices (dtm, or in quanteda’s parlance, document-feature
+matrices).
+
+Currently, there is no standard format for document-term matrics. A
+resdtmf file is a JSON file with five components:
+
+1.  `triplets`: a collection of triplets which are tuples of 3 values:
+    docid (document id), tid (term id), f (frequncy)
+2.  `features`: a collection of features which are tuples of 2 values:
+    tid (term id), term (the term itself)
+3.  `dumped_docvars`: meta-data for every document
+4.  `dumped_meta`: meta-data of the entire dtm
+5.  `order_of_content`: a collection of tuples of 2 values: order
+    (numeric sequence of order), docid.
 
 ## Installation
 
-And the development version from [GitHub](https://github.com/) with:
+Install the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -22,7 +35,7 @@ devtools::install_github("chainsawriot/resdtmf")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+Suppose you have a simple document-feature matrix like this:
 
 ``` r
 require(quanteda)
@@ -51,6 +64,8 @@ input_dfm
 #>   text2 0    1   1  1    0
 #>   text3 1    0   1  0    1
 ```
+
+This document-feature matrix can be exported into a json file with:
 
 ``` r
 export_resdtmf(input_dfm, "example.json")
@@ -86,6 +101,8 @@ docvars(example_dfm)
 #> 2         1
 #> 3         0
 ```
+
+And everything is equal.
 
 ``` r
 all.equal(example_dfm, input_dfm)

@@ -8,18 +8,18 @@
 #' @return file path of exported file.
 #' @export
 export_resdtmf <- function(input_dfm, file_path, order = TRUE, compress = FALSE, return_path = FALSE) {
-    input_triplet <- quanteda::convert(input_dfm, to = 'tripletlist')
-    unique_feature <- unique(input_triplet$feature)
-    clean_feature <- match(input_triplet$feature, unique_feature)
-    triplet <- tibble::tibble(d = input_triplet$document, tid = clean_feature, f = input_triplet$frequency)
+    input_triplets <- quanteda::convert(input_dfm, to = 'tripletlist')
+    unique_feature <- unique(input_triplets$feature)
+    clean_feature <- match(input_triplets$feature, unique_feature)
+    triplets <- tibble::tibble(docid = input_triplets$document, tid = clean_feature, f = input_triplets$frequency)
     features <- tibble::tibble(tid = seq_along(unique_feature), term = unique_feature)
     if (length(names(Filter(is.factor, docvars(input_dfm)))) != 0) {
         ## there is factor column(s) in the data.frame
         warning("Factor column(s) detected. These column(s) are preserved as character without factor information.")
     }
-    dumped_docvars <- tibble::as_tibble(cbind(tibble::tibble(d = rownames(input_dfm)), quanteda::docvars(input_dfm)))
-    order_of_content <- tibble::tibble(order = seq_along(rownames(input_dfm)), d = rownames(input_dfm))
-    json_content <- jsonlite::toJSON(list(triplet = triplet, features = features, dumped_docvars = dumped_docvars, dumped_meta = meta(input_dfm), order_of_content = order_of_content))
+    dumped_docvars <- tibble::as_tibble(cbind(tibble::tibble(docid = rownames(input_dfm)), quanteda::docvars(input_dfm)))
+    order_of_content <- tibble::tibble(order = seq_along(rownames(input_dfm)), docid = rownames(input_dfm))
+    json_content <- jsonlite::toJSON(list(triplets = triplets, features = features, dumped_docvars = dumped_docvars, dumped_meta = meta(input_dfm), order_of_content = order_of_content))
     writeLines(json_content, file_path)
     if (compress) {
         return_path <- paste0(file_path, ".zip")
@@ -46,17 +46,17 @@ import_resdtmf <- function(file_path, compress = FALSE) {
         file_path <- grep("\\.json$", list.files(tmpdir, full.names = TRUE), value = TRUE)[1]
     }
     json_content <- jsonlite::read_json(file_path, simplifyDataFrame = TRUE)
-    triplet <- json_content$triplet
+    triplets <- json_content$triplets
     features <- json_content$features
     dumped_docvars <- json_content$dumped_docvars
-    output <- Matrix::sparseMatrix(i = match(triplet$d, unique(triplet$d)), j = triplet$tid, x = triplet$f, dimnames = list(unique(triplet$d), features$term))
+    output <- Matrix::sparseMatrix(i = match(triplets$docid, unique(triplets$docid)), j = triplets$tid, x = triplets$f, dimnames = list(unique(triplets$docid), features$term))
     output_dfm <- quanteda::as.dfm(output)
-    arranged_meta <- subset(dumped_docvars[match(rownames(output_dfm), dumped_docvars$d), ], select = -c(d))
+    arranged_meta <- subset(dumped_docvars[match(rownames(output_dfm), dumped_docvars$d), ], select = -c(docid))
     quanteda::docvars(output_dfm) <- arranged_meta
     order_of_content <- json_content$order_of_content
     ### Fixing the order
-    output_dfm <- output_dfm[match(order_of_content$d, rownames(output_dfm)),]
-    output_dfm@docvars$docid_ <- factor(output_dfm@docvars$docid_, order_of_content$d)
+    output_dfm <- output_dfm[match(order_of_content$docid, rownames(output_dfm)),]
+    output_dfm@docvars$docid_ <- factor(output_dfm@docvars$docid_, order_of_content$docid)
     ### This is a guess!
     meta(output_dfm) <- lapply(json_content$dumped_meta, unlist)
     return(output_dfm)
