@@ -1,13 +1,16 @@
 #' Export a DFM into resdtmf
 #'
 #' This function exports a dfm into the Responsible Document-term Matrix format.
-#' @param input_dfm dfm object
+#' @param input_dfm dfm object. Other object types are converted to dfm using \code{quanteda::as.dfm}. Examples of these types are \code{Matrix} (from the Matrix package) and \code{DocumentTermMatrix} (from the tm package).
 #' @param file_path characters, file path of the exported file
 #' @param compress logical, compress the json file into a zip file. File extension ".zip" will be added to file_path, if TRUE.
 #' @param order logical, preserve the order of input_dfm in the exported file?
 #' @return file path of exported file.
 #' @export
 export_resdtmf <- function(input_dfm, file_path, order = TRUE, compress = FALSE, return_path = FALSE) {
+    if (!is.dfm(input_dfm)) {
+        input_dfm <- as.dfm(input_dfm)
+    }
     input_triplets <- quanteda::convert(input_dfm, to = 'tripletlist')
     unique_feature <- unique(input_triplets$feature)
     clean_feature <- match(input_triplets$feature, unique_feature)
@@ -37,9 +40,11 @@ export_resdtmf <- function(input_dfm, file_path, order = TRUE, compress = FALSE,
 #' This function imports a resdtmf file exported using export_resdtmf into a dfm object.
 #' @param file_path characters, file path of the resdtmf json file.
 #' @param compress boolean, is the file created with export_resdtmf(compress = TRUE)? Will automatically set to TRUE when file_path ends with .zip.
+#' @param convert_to characters, convert the imported dfm to another format. Please consult \code{help(quanteda::convert)} for possible options. Some examples are "lda", "stm" and "data.frame"
+#' @param ... additional parameters to quanteda::convert.
 #' @return a dfm object.
 #' @export
-import_resdtmf <- function(file_path, compress = FALSE) {
+import_resdtmf <- function(file_path, compress = FALSE, convert_to = NULL, ...) {
     if (compress | grepl("\\.zip$", file_path)) {
         tmpdir <- tempdir()
         unzip(file_path, exdir = tmpdir)
@@ -59,5 +64,8 @@ import_resdtmf <- function(file_path, compress = FALSE) {
     output_dfm@docvars$docid_ <- factor(output_dfm@docvars$docid_, order_of_content$docid)
     ### This is a guess!
     meta(output_dfm) <- lapply(json_content$dumped_meta, unlist)
+    if (!is.null(convert_to)) {
+        output_dfm <- quanteda::convert(output_dfm, to = convert_to, ...)
+    }
     return(output_dfm)
 }

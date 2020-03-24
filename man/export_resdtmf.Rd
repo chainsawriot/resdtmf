@@ -13,7 +13,7 @@ export_resdtmf(
 )
 }
 \arguments{
-\item{input_dfm}{dfm object}
+\item{input_dfm}{dfm object. Other object types are converted to dfm using \code{quanteda::as.dfm}. Examples of these types are \code{Matrix} (from the Matrix package) and \code{DocumentTermMatrix} (from the tm package).}
 
 \item{file_path}{characters, file path of the exported file}
 

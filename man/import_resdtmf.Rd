@@ -4,12 +4,16 @@
 \alias{import_resdtmf}
 \title{Import a resdtmf file into DFM}
 \usage{
-import_resdtmf(file_path, compress = FALSE)
+import_resdtmf(file_path, compress = FALSE, convert_to = NULL, ...)
 }
 \arguments{
 \item{file_path}{characters, file path of the resdtmf json file.}
 
 \item{compress}{boolean, is the file created with export_resdtmf(compress = TRUE)? Will automatically set to TRUE when file_path ends with .zip.}
+
+\item{convert_to}{characters, convert the imported dfm to another format. Please consult \code{help(quanteda::convert)} for possible options. Some examples are "lda", "stm" and "data.frame"}
+
+\item{...}{additional parameters to quanteda::convert.}
 }
 \value{
 a dfm object.

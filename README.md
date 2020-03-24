@@ -8,18 +8,18 @@
 <!-- badges: end -->
 
 The goal of Responsible Document-term Matrix Format (`resdtmf`,
-pronounced as “res-dumf” /ɹɪˈzdəmf/) is to create a machine-readable,
+pronounced as “res-dumf” /ˈɹɪzdəmf/) is to create a machine-readable,
 plain-text and exchangable file format of document-term matrices (dtm,
 or in quanteda’s parlance, document-feature matrices).
 
 Currently, there is no standard format for document-term matrics. A
-resdtmf file is a JSON file with five components:
+resdtmf file is a JSON file with the following five components:
 
 1.  `triplets`: a collection of triplets which are tuples of 3 values:
     docid (document id), tid (term id), f (frequncy)
 2.  `features`: a collection of features which are tuples of 2 values:
     tid (term id), term (the term itself)
-3.  `dumped_docvars`: meta-data for every document
+3.  `dumped_docvars`: meta-data of each document
 4.  `dumped_meta`: meta-data of the entire dtm
 5.  `order_of_content`: a collection of tuples of 2 values: order
     (numeric sequence of order), docid.
@@ -212,6 +212,23 @@ And everything is equal.
 ``` r
 all.equal(example_dfm, input_dfm)
 #> [1] TRUE
+```
+
+It is also possible to convert the imported dfm into another format,
+e.g. “data.frame”.
+
+``` r
+example_dfm_df <- import_resdtmf("example.json", convert_to = "data.frame")
+class(example_dfm_df)
+#> [1] "data.frame"
+```
+
+``` r
+example_dfm_df
+#>   document i love you me hate
+#> 1    text1 1    1   1  0    0
+#> 2    text2 0    1   1  1    0
+#> 3    text3 1    0   1  0    1
 ```
 
 Example: serializing a DTM created using the `data_corpus_inaugural`
