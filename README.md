@@ -129,6 +129,10 @@ This is an example of a resdtmf file.
 }
 ```
 
+We also believe that a responsible DTM should have enough meta data to
+describe the meaning of the data. This package supports [Dublin
+Core](https://dublincore.org/) (DCMES 1.1).
+
 ## Installation
 
 Install the development version from [GitHub](https://github.com/) with:
@@ -138,7 +142,7 @@ Install the development version from [GitHub](https://github.com/) with:
 devtools::install_github("chainsawriot/resdtmf")
 ```
 
-## Example
+## Example - Basic serialization
 
 Suppose you have a simple document-feature matrix like this:
 
@@ -289,4 +293,63 @@ file.size("inaug_dfm2.json.zip")
 inaugural_dfm_from_json_zip <- import_resdtmf("inaug_dfm2.json.zip")
 all.equal(inaugural_dfm, inaugural_dfm_from_json_zip)
 #> [1] "Attributes: < Component \"docvars\": Component \"Party\": 'current' is not a factor >"
+```
+
+## Example - Dublin Core
+
+``` r
+quanteda::corpus(c('i love you',
+                   'you love me',
+                   'baka shinji',
+                   'ich liebe dict obwohl du ssss bist'),
+                 docvars = data.frame(sentiment = c(1,1,0,1))) %>%
+    quanteda::dfm() -> input_dfm
+input_dfm
+#> Document-feature matrix of: 4 documents, 13 features (71.2% sparse) and 1 docvar.
+#>        features
+#> docs    i love you me baka shinji ich liebe dict obwohl
+#>   text1 1    1   1  0    0      0   0     0    0      0
+#>   text2 0    1   1  1    0      0   0     0    0      0
+#>   text3 0    0   0  0    1      1   0     0    0      0
+#>   text4 0    0   0  0    0      0   1     1    1      1
+#> [ reached max_nfeat ... 3 more features ]
+```
+
+``` r
+dc_meta <- create_dc(
+    title = c("Romeo + Juliet", "Moulin Rouge!", "Neon Genesis: Evangelion", "Mord ist mein Geschäft, Liebling"),
+    format = "Document-term Matrix",
+    language = c("en", "en", "ja", "de"))
+
+input_dfm2 <- put_dc(input_dfm, dc_meta)
+input_dfm2
+#> Document-feature matrix of: 4 documents, 13 features (71.2% sparse) and 16 docvars.
+#>        features
+#> docs    i love you me baka shinji ich liebe dict obwohl
+#>   text1 1    1   1  0    0      0   0     0    0      0
+#>   text2 0    1   1  1    0      0   0     0    0      0
+#>   text3 0    0   0  0    1      1   0     0    0      0
+#>   text4 0    0   0  0    0      0   1     1    1      1
+#> [ reached max_nfeat ... 3 more features ]
+```
+
+Inspecting DCMES 1.5 data (similar to the `tm::DublinCore` method).
+
+``` r
+inspect_dc(input_dfm2[4,])
+#> Format: Document-term Matrix
+#> Language: de
+#> Title: Mord ist mein Geschäft, Liebling
+```
+
+Serialization
+
+``` r
+export_resdtmf(input_dfm2, "input_dfm2.json")
+#> [1] "input_dfm2.json"
+input_dfm3 <- import_resdtmf("input_dfm2.json")
+inspect_dc(input_dfm3[4,])
+#> Format: Document-term Matrix
+#> Language: de
+#> Title: Mord ist mein Geschäft, Liebling
 ```

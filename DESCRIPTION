@@ -1,6 +1,6 @@
 Package: resdtmf
 Title: Responsible Document-Term Matrix Format
-Version: 0.0.4
+Version: 0.0.5
 Authors@R: 
     person(given = "Chung-hong",
            family = "Chan",
@@ -15,7 +15,8 @@ Imports:
     Matrix,
     quanteda (>= 2.0),
     tibble,
-    jsonlite
+    jsonlite,
+    tools
 RoxygenNote: 7.0.2
 Suggests: 
     testthat
